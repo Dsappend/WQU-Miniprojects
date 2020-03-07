@@ -1,0 +1,106 @@
+You might have noticed that the primality check is_prime we developed before is somewhat slow for large numbers. This is because we are doing a ton of extra work checking every possible factor of the tested number. We will use two optimizations to make a is_prime_fast function.
+
+The first optimization takes advantage of the fact that two is the only even prime. Thus we can check if a number is even and as long as its greater than 2, we know that it is not prime.
+
+Our second optimization takes advantage of the fact that when checking factors, we only need to check odd factors up to the square root of a number. Consider a number 𝑛
+decomposed into factors 𝑛=𝑎𝑏. There are two cases, either 𝑛 is prime and without loss of generality, 𝑎=𝑛,𝑏=1 or 𝑛 is not prime and 𝑎,𝑏≠𝑛,1. In this case, if 𝑎>𝑛⎯⎯√, then 𝑏<𝑛⎯⎯√. So we only need to check all possible values of 𝑏 and we get the values of 𝑎
+
+for free! This means that even the simple method of checking factors will increase in complexity as a square root compared to the size of the number instead of linearly.
+
+Lets write the function to do this and check the speed! is_prime_fast will take a number and return whether or not it is prime.
+
+You will see the functions followed by a cell with an assert statement. These cells should run and produce no output, if they produce an error, then your function needs to be modified. Do not modify the assert statements, they are exactly as they should be!
+
+import math
+
+def is_prime_fast(number):
+
+    
+
+    if number < 2 :
+
+        return False
+
+    if number == 2:
+
+        return True
+
+    if number %2 == 0:
+
+        return False
+
+    if (math.sqrt(number)%1) == 0.0:
+
+        return False
+
+    
+
+    for i in range (3, int(math.sqrt(number))+1,2):
+
+        
+
+        if number % i == 0:
+
+            
+
+            return False
+
+        
+
+    return True
+
+is_prime_fast(2)
+
+True
+
+Run the following cell to make sure it finds the same primes as the original function.
+
+for n in range(10000):
+
+    assert is_prime(n) == is_prime_fast(n)
+
+Now lets check the timing, here we will use the %%timeit magic which will time the execution of a particular cell.
+
+%%timeit
+
+is_prime(67867967)
+
+4.82 s ± 14 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+%%timeit
+
+is_prime_fast(67867967)
+
+295 µs ± 4.36 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+
+Now return a function which will find all prime numbers up to and including 𝑛
+
+. Submit this function to the grader.
+
+def get_primes_fast(n):
+
+    # define an array to store the primes 
+
+    primes = []
+
+    for y in range (2, n):
+
+        for z in range(2, y):
+
+            if y % z == 0:
+
+                break
+
+        else:
+
+            primes.append(y)
+
+    primes.sort()
+
+    
+
+    return primes
+
+get_primes_fast(65)
+
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61]
