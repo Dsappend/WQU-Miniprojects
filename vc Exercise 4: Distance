@@ -1,0 +1,90 @@
+Another quantity we might want to compute is the distance between two points. This is generally given for points 𝑃1=(𝑥1,𝑦1) and 𝑃2=(𝑥2,𝑦2) as
+𝐷=|𝑃2−𝑃1|=(𝑥1−𝑥2)2+(𝑦1−𝑦2)2⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯√.
+
+Implement a method called distance which finds the distance from a point to another point.
+
+Once this is done, execute the grader.score cell for this question (do not edit that cell; you only need to modify the Point class.)
+Hint
+
+    You can use the sqrt function from the math package.
+
+sqrt()
+
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+<ipython-input-15-898b4dbc6ab0> in <module>()
+----> 1 sqrt()
+
+NameError: name 'sqrt' is not defined
+
+from math import sqrt
+
+​
+
+class Point(object):
+
+    def __init__(self, x, y):
+
+        self.x = x
+
+        self.y = y
+
+    
+
+    def __add__(self, other):
+
+        return Point(self.x + other.x,
+
+                     self.y + other.y)
+
+    
+
+    def __sub__(self, other):
+
+        return Point(self.x - other.x,
+
+                     self.y - other.y)
+
+    
+
+    def __mul__(self, other):
+
+        if isinstance (other, Point):
+
+            return self.x * other.x + self.y * other.y
+
+        elif isinstance (other,  (int, float)):
+
+            return Point(
+
+                self.x * other,
+
+                self.y * other
+
+            )
+
+        else:
+
+            raise ValueError('other must be numeric or type Point.') 
+
+            
+
+    def distance(self, other):
+
+        return sqrt((self.x-other.x)**2 + (self.y-other.y)**2)
+
+    
+
+    def __repr__(self):
+
+        return f'Point({self.x}, { self.y})'
+
+Point(2,2).distance(Point(1,1))
+
+1.4142135623730951
+
+def dist_result(points):
+
+    points = [Point(*point) for point in points]
+
+    return [points[0].distance(point) for point in points]
