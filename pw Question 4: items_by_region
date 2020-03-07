@@ -1,0 +1,76 @@
+Now we'll combine the techniques we've developed to answer a more complex question. Find the most commonly dispensed item in each postal code, representing the results as a list of tuples (post_code, bnf_name, amount dispensed as proportion of total). Sort your results ascending alphabetically by post code and take only results from the first 100 post codes.
+
+NOTE: We'll continue to use the joined variable we created before, where we've chosen the alphabetically first postal code for each practice. Additionally, some postal codes will have multiple 'bnf_name' with the same number of items prescribed for the maximum. In this case, we'll take the alphabetically first 'bnf_name'.
+
+Now we need to calculate the total items of each 'bnf_name' prescribed in each 'post_code'. Use the techniques we developed in the previous questions to calculate these totals. You should have 141196 ('post_code', 'bnf_name') groups.
+
+name_grouped = group_by_field(joined, ('post_code', 'bnf_name')).items()
+
+​
+
+total_items_by_bnf_post = {name: sum(group['items']
+
+                                    for group in groups)
+
+                          for name, groups in name_grouped}
+
+​
+
+assert len(total_items_by_bnf_post) == 141196
+
+Let's use total_items to find the maximum item total for each postal code. To do this, we will want to regroup total_items_by_bnf_post by 'post_code' only, not by ('post_code', 'bnf_name'). First let's turn total_items into a list of dictionaries (similar to scripts or practices) and then group it by 'post_code'. You should have 118 groups in the resulting total_items_by_post after grouping total_items by 'post_code'.
+
+total_items = [{'post_code': tup[0], 'bnf_name': tup[1], 'total': tot}
+
+               for tup, tot in list(total_items_by_bnf_post.items())]
+
+total_items_by_post = group_by_field(total_items, ('post_code',))
+
+len(total_items_by_post)
+
+118
+
+total_items = ...
+
+assert len(total_items_by_post) == 118
+
+Now we will aggregate the groups in total_by_item_post to create max_item_by_post. Some 'bnf_name' have the same item total within a given postal code. Therefore, if more than one 'bnf_name' has the maximum item total in a given postal code, we'll take the alphabetically first 'bnf_name'. We can do this by sorting each group according to the item total and 'bnf_name'.
+
+test_list = total_items_by_post[('BL9 0SN',)]
+
+sorted(test_list[:5], key=lambda mem: (-mem['total'], mem['bnf_name']))[0]
+
+{'post_code': 'BL9 0SN', 'bnf_name': 'Bisoprolol Fumar_Tab 10mg', 'total': 61}
+
+max_item_by_post = [sorted(group, key=lambda mem: (-mem['total'], 
+
+                                                   mem['bnf_name']))[0]
+
+                    for group in total_items_by_post.values()]
+
+[sorted(group, key=lambda mem: (-mem['total'], mem['bnf_name']))[0]
+
+for group in total_items_by_post.values()][:2]
+
+[{'post_code': 'BH18 8EE',
+  'bnf_name': 'Omeprazole_Cap E/C 20mg',
+  'total': 1143},
+ {'post_code': 'HU7 4DW',
+  'bnf_name': 'Salbutamol_Inha 100mcg (200 D) CFF',
+  'total': 1306}]
+
+result = [(item['post_code'],
+
+           item['bnf_name'],
+
+           item['total'] / dict(items_by_post)[item['post_code']])
+
+          for item in max_item_by_post]
+
+items_by_region = sorted(result)[:100]
+
+items_by_region = sorted(result)[:100]
+
+In order to express the item totals as a proportion of the total amount of items prescribed across all 'bnf_name' in a postal code, we'll need to use the total items prescribed that we previously calculated as items_by_post. Calculate the proportions for the most common 'bnf_names' for each postal code. Format your answer as a list of tuples: [(post_code, bnf_name, total)]
+
+items_by_region = [('B11 4BW', 'Salbutamol_Inha 100mcg (200 D) CFF', 0.0341508247)] * 100
