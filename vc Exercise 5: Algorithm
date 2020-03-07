@@ -1,0 +1,92 @@
+Now we will use these points to solve a real world problem! We can use our Point objects to represent measurements of two different quantities (e.g. a company's stock price and volume). One thing we might want to do with a data set is to separate the points into groups of similar points. Here we will implement an iterative algorithm to do this which will be a specific case of the very general 𝑘-means clustering algorithm. The algorithm will require us to keep track of two clusters, each of which have a list of points and a center (which is another point, not necessarily one of the points we are clustering). After making an initial guess at the center of the two clusters, 𝐶1 and 𝐶2
+
+, the steps proceed as follows
+
+    Assign each point to 𝐶1
+
+or 𝐶2 based on whether the point is closer to the center of 𝐶1 or 𝐶2
+.
+Recalculate the center of 𝐶1
+and 𝐶2
+
+    based on the contained points.
+
+See reference for more information.
+
+This algorithm will terminate in general when the assignments no longer change. For this question, we would like you to initialize one cluster at (1, 0) and the other at (-1, 0).
+
+The returned values should be the two centers of the clusters ordered by greatest x value. Please return these as a list of numeric tuples [(𝑥1,𝑦1),(𝑥2,𝑦2)]
+
+In order to accomplish this we will create a class called cluster which has two methods besides __init__ which you will need to write. The first method update will update the center of the Cluster given the points contained in the attribute points. Remember, you after updating the center of the cluster, you will want to reassign the points and thus remove previous assignments. The other method add_point will add a point to the points attribute.
+
+Once this is done, execute the grader.score cell for this question (do not edit that cell; you only need to modify the Cluster class and compute_result function.)
+
+class Cluster(object):
+
+    def __init__(self, x, y):
+
+        self.center = Point(x, y)
+
+        self.points = []
+
+    
+
+    def update(self):
+
+        sum_ = sum(self.points,Point(0,0))
+
+        len_ = len(self.points)
+
+        self.center = Point(sum_.x/len_, sum_.y/len_)
+
+        self.points = []
+
+    
+
+    def add_point(self, point):
+
+        self.points.append(point)
+
+        
+
+def compute_result(points):
+
+    points = [Point(*point) for point in points]
+
+    a = Cluster(1,0)
+
+    b = Cluster(-1,0)
+
+    a_old = []
+
+    for _ in range(10000): # max iterations
+
+        for point in points:
+
+            if point.distance(a.center) < point.distance(b.center):
+
+                # add the right point
+
+                a.add_point(point)
+
+            else:
+
+                # add the right point
+
+                b.add_point(point)
+
+        if a_old == a.points:
+
+            break
+
+        a_old = a.points
+
+        a.update()
+
+        b.update()
+
+    return [(a.center.x, a.center.y), (b.center.x, b.center.y)]
+
+compute_result([[1,1],[2,2],[3,3],[-1,-1],[-1,-2]])
+
+[(2.0, 2.0), (-1.0, -1.5)]
