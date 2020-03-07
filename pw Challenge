@@ -1,0 +1,37 @@
+Challenge: Write a function that constructs groups as we did above. The function should accept a list of dictionaries (e.g. scripts or practices) and a tuple of fields to groupby (e.g. ('bnf_name') or ('bnf_name', 'post_code')) and returns a dictionary of groups. The following questions will require you to aggregate data in groups, so this could be a useful function for the rest of the miniproject.
+
+def group_by_field(data, fields):
+
+    names = {tuple(item[field] for field in fields) for item in data}
+
+    groups = {name: [] for name in names}
+
+    for item in data:
+
+        name = tuple(item[field] for field in fields)
+
+        groups[name].append(item)
+
+    return groups
+
+result = group_by_field(scripts, ('bnf_name', 'practice'))
+
+list(result.keys())[:5]
+
+[('Metoprolol Tart_Tab 50mg', 'P92653'),
+ ('Indacaterol/Glycopy_Pdr Inh Cap 85/54mcg', 'C85022'),
+ ('Difflam_P/Spy 0.15% 30ml', 'E85735'),
+ ('Salamol E-Breathe_Inh 100mcg (200 D) CFF', 'P92024'),
+ ('Perindopril Erbumine_Tab 2mg', 'P85008')]
+
+groups = group_by_field(scripts, ('bnf_name',))
+
+​
+
+test_max_item = [max([(sum([member['items'] for member in group]), name[0])
+
+for name, group in groups.items()])[::-1]]
+
+​
+
+assert test_max_item == max_item
