@@ -1,0 +1,88 @@
+Our data set is broken up among different files. This is typical for tabular data to reduce redundancy. Each table typically contains data about a particular type of event, processes, or physical object. Data on prescriptions and medical practices are in separate files in our case. If we want to find the total items prescribed in each postal code, we will have to join our prescription data (scripts) to our clinic data (practices).
+
+Find the total items prescribed in each postal code, representing the results as a list of tuples (post code, total items prescribed). Sort your results ascending alphabetically by post code and take only results from the first 100 post codes. Only include post codes if there is at least one prescription from a practice in that post code.
+
+NOTE: Some practices have multiple postal codes associated with them. Use the alphabetically first postal code.
+
+We can join scripts and practices based on the fact that 'practice' in scripts matches 'code' in practices. However, we must first deal with the repeated values of 'code' in practices. We want the alphabetically first postal codes.
+
+practice_postal = {}
+
+for practice in practices:
+
+    code = practice['code']
+
+    if code not in practice_postal:
+
+        practice_postal[code] = practice['post_code']
+
+        
+
+    if code in practice_postal:
+
+        practice_postal[code] = min(practice_postal[code],
+
+                                    practice['post_code'])
+
+    
+
+    #if practice['code'] in practice_postal:
+
+        #practice_postal[practice['code']] = ...
+
+    #else:
+
+        #practice_postal[practice['code']] = ...
+
+Challenge: This is an aggregation of the practice data grouped by practice codes. Write an alternative implementation of the above cell using the group_by_field function you defined previously.
+
+assert practice_postal['K82019'] == 'HP21 8TR'
+
+Challenge: This is an aggregation of the practice data grouped by practice codes. Write an alternative implementation of the above cell using the group_by_field function you defined previously.
+
+assert practice_postal['K82019'] == 'HP21 8TR'
+
+Now we can join practice_postal to scripts.
+
+joined = scripts[:]
+
+for script in joined:
+
+    script['post_code'] = practice_postal[script['practice']]
+
+joined[0]
+
+{'bnf_code': '0101010G0AAABAB',
+ 'items': 2,
+ 'practice': 'N81013',
+ 'bnf_name': 'Co-Magaldrox_Susp 195mg/220mg/5ml S/F',
+ 'nic': 5.98,
+ 'act_cost': 5.56,
+ 'quantity': 1000,
+ 'post_code': 'SK11 6JL'}
+
+Finally we'll group the prescription dictionaries in joined by 'post_code' and sum up the items prescribed in each group, as we did in the previous question.
+
+pc_grouped = list(group_by_field(joined, ('post_code',)).items())
+
+​
+
+items_by_post = [(pc[0], sum(group['items'] for group in groups)) 
+
+                 for pc, groups in pc_grouped]
+
+​
+
+items_by_post = sorted(items_by_post)
+
+pc = pc_grouped[0][0]
+
+pc[0]
+
+'BH18 8EE'
+
+postal_totals = items_by_post[:100]
+
+len(postal_totals)
+
+100
