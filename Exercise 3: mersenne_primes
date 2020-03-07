@@ -1,0 +1,43 @@
+For a given Mersenne number with exponent 𝑝, the number is prime if the Lucas-Lehmer series is 0 at position 𝑝−2. Write a function that tests if a Mersenne number with exponent 𝑝 is prime. Test if the Mersenne numbers with prime 𝑝
+
+between 3 and 65 (i.e. 3, 5, 7, ..., 61) are prime. Your final answer should be a list of tuples consisting of (Mersenne exponent, 0) (or 1) for each Mersenne number you test, where 0 and 1 are replacements for False and True respectively.
+
+HINT: The zip function is useful for combining two lists into a list of tuples
+
+def ll_prime(p):
+
+    if lucas_lehmer(p)[-1] == 0:
+
+        return (p, 1)
+
+    return (p, 0)
+
+        
+
+primes = get_primes(3,65)
+
+​
+
+mersenne_primes = [ll_prime(p) for p in primes]
+
+    
+
+mersenne_primes
+
+[(3, 1),
+ (5, 1),
+ (7, 1),
+ (11, 0),
+ (13, 1),
+ (17, 1),
+ (19, 1),
+ (23, 0),
+ (29, 0),
+ (31, 1),
+ (37, 0),
+ (41, 0),
+ (43, 0),
+ (47, 0),
+ (53, 0),
+ (59, 0),
+ (61, 1)]
